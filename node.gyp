@@ -16,6 +16,7 @@
     'node_module_version%': '',
     'node_use_amaro%': 'true',
     'node_shared_brotli%': 'false',
+    'node_shared_zstd%': 'false',
     'node_shared_zlib%': 'false',
     'node_shared_http_parser%': 'false',
     'node_shared_cares%': 'false',
@@ -401,11 +402,6 @@
       'src/quic/tokens.h',
       'src/quic/transportparams.h',
       'src/quic/quic.cc',
-    ],
-    'node_cctest_sources': [
-      'src/node_snapshot_stub.cc',
-      '<!@("<(python)" tools/search_files.py . test/cctest cc)',
-      '<!@("<(python)" tools/search_files.py . test/cctest h)',
     ],
     'node_cctest_openssl_sources': [
       'test/cctest/test_crypto_clienthello.cc',

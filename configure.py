@@ -574,6 +574,29 @@ shared_optgroup.add_argument('--shared-sqlite-libpath',
     dest='shared_sqlite_libpath',
     help='a directory to search for the shared sqlite DLL')
 
+shared_optgroup.add_argument('--shared-zstd',
+    action='store_true',
+    dest='shared_zstd',
+    default=None,
+    help='link to a shared zstd DLL instead of static linking')
+
+shared_optgroup.add_argument('--shared-zstd-includes',
+    action='store',
+    dest='shared_zstd_includes',
+    help='directory containing zstd header files')
+
+shared_optgroup.add_argument('--shared-zstd-libname',
+    action='store',
+    dest='shared_zstd_libname',
+    default='zstd',
+    help='alternative lib name to link to [default: %(default)s]')
+
+shared_optgroup.add_argument('--shared-zstd-libpath',
+    action='store',
+    dest='shared_zstd_libpath',
+    help='a directory to search for the shared zstd DLL')
+
+parser.add_argument_group(shared_optgroup)
 
 for builtin in shareable_builtins:
   builtin_id = 'shared_builtin_' + builtin + '_path'
@@ -1394,6 +1417,11 @@ def gcc_version_ge(version_checked):
 def configure_node_lib_files(o):
   o['variables']['node_library_files'] = SearchFiles('lib', 'js')
 
+def configure_node_cctest_sources(o):
+  o['variables']['node_cctest_sources'] = [ 'src/node_snapshot_stub.cc' ] + \
+    SearchFiles('test/cctest', 'cc') + \
+    SearchFiles('test/cctest', 'h')
+
 def configure_node(o):
   if options.dest_os == 'android':
     o['variables']['OS'] = 'android'
@@ -2207,6 +2235,7 @@ flavor = GetFlavor(flavor_params)
 
 configure_node(output)
 configure_node_lib_files(output)
+configure_node_cctest_sources(output)
 configure_napi(output)
 configure_library('zlib', output)
 configure_library('http_parser', output)
@@ -2221,6 +2250,7 @@ configure_library('nghttp3', output, pkgname='libnghttp3')
 configure_library('ngtcp2', output, pkgname='libngtcp2')
 configure_library('sqlite', output, pkgname='sqlite3')
 configure_library('uvwasi', output, pkgname='libuvwasi')
+configure_library('zstd', output)
 configure_v8(output, configurations)
 configure_openssl(output)
 configure_intl(output)
